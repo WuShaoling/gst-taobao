@@ -64,7 +64,7 @@
 # head -5 user_log.csv
 ```
 
-### 3. 数据集的预处理
+### 2. 数据集的预处理
 3.1. 删除文件第一行记录，即字段名称user_log.csv的第一行都是字段名称，我们在文件中的数据导入到数据仓库Hive中时，不需要第一行字段名称，因此，这里在做数据预处理时，删除第一行：
 > ```
 # sed -i '1d' user_log.csv //1d表示删除第1行，同理，3d表示删除第3行，nd表示删除第n行
@@ -159,7 +159,7 @@ hive>  use dbtaobao;
 创建外部表
 关于数据仓库Hive的内部表和外部表的区别，请读者自行了解本教程采用外部表方式。这里我们要分别在数据库dbtaobao中创建一个外部表user_log，它包含字段（user_id,item_id,cat_id,merchant_id,brand_id,month,day,action,age_range,gender,province）,请在hive命令提示符下输入如下命令：
 ```
-hive> CREATE EXTERNAL TABLE dbtaobao.user_log(user_id INT,item_id INT,cat_id INT,merchant_id INT,brand_id INT,month STRING,day STRING,action INT,age_range INT,gender INT,province STRING) COMMENT 'Welcome to xmu dblab,Now create dbtaobao.user_log!' ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/dbtaobao/dataset/user_log';
+hive>  CREATE EXTERNAL TABLE dbtaobao.user_log(user_id INT,item_id INT,cat_id INT,merchant_id INT,brand_id INT,month STRING,day STRING,action INT,age_range INT,gender INT,province STRING) COMMENT 'Welcome to xmu dblab,Now create dbtaobao.user_log!' ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/dbtaobao/dataset/user_log';
 ```
 查询数据
 上面已经成功把HDFS中的“/dbtaobao/dataset/user_log”目录下的small_user_log.csv数据加载到了数据仓库Hive中，我们现在可以使用下面命令查询一下：
@@ -168,5 +168,5 @@ hive>  select * from user_log limit 10;
 ```
 操作成功后,退出Hive
 ```
-hive> exit;
+hive>  exit;
 ```
