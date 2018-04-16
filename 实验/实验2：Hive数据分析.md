@@ -21,7 +21,8 @@
 - 7.用户实时查询分析
 
 # 实验步骤
-### 1. 操作Hive
+
+### 1. 环境准备
 
 因为需要借助于MySQL保存Hive的元数据，所以如果没有启动MySQL数据库，请首先启动MySQL数据库，请在终端中输入下面命令：
 
@@ -44,7 +45,10 @@
 # ./bin/hive
 ```
 
-通过上述过程，我们就完成了MySQL、Hadoop和Hive三者的启动。启动成功以后，就进入了“hive>”命令提示符状态，可以输入类似SQL语句的HiveQL语句。然后，在“hive>”命令提示符状态下执行下面命令：
+通过上述过程，我们就完成了MySQL、Hadoop和Hive三者的启动。启动成功以后，就进入了“hive>”命令提示符状态，可以输入类似SQL语句的HiveQL语句。
+
+### 2. 操作Hive
+在“hive>”命令提示符状态下执行下面命令：
 
 ```
 hive> use dbtaobao; -- 使用dbtaobao数据库
@@ -106,8 +110,8 @@ gender              	int
 province            	string              	                    
 Time taken: 0.11 seconds, Fetched: 11 row(s)
 
-### 2. 简单查询分析
-##### 2.1 先测试一下简单的指令：
+### 3. 简单查询分析
+##### 1. 先测试一下简单的指令：
 
 ```
 hive> select brand_id from user_log limit 10; -- 查看日志前10个交易日志的商品品牌
@@ -125,7 +129,7 @@ hive> select brand_id from user_log limit 10; -- 查看日志前10个交易日�
 5476
 6300
 
-##### 2.2 如果要查出每位用户购买商品时的多种信息，输出语句格式为 select 列1，列2，….，列n from 表名；比如我们现在查询前20个交易日志中购买商品时的时间和商品的种类
+##### 2. 如果要查出每位用户购买商品时的多种信息，输出语句格式为 select 列1，列2，….，列n from 表名；比如我们现在查询前20个交易日志中购买商品时的时间和商品的种类
 
 ```
 hive> select month,day,cat_id from user_log limit 20;
@@ -154,7 +158,7 @@ hive> select month,day,cat_id from user_log limit 20;
 11	11	389
 11	11	1432
 
-##### 2.3 有时我们在表中查询可以利用嵌套语句，如果列名太复杂可以设置该列的别名，以简化我们操作的难度，以下我们可以举个例子：
+##### 3. 有时我们在表中查询可以利用嵌套语句，如果列名太复杂可以设置该列的别名，以简化我们操作的难度，以下我们可以举个例子：
 
 ```
 hive> select ul.at, ul.ci  from (select action as at, cat_id as ci from user_log) as ul limit 20;
@@ -185,9 +189,9 @@ hive> select ul.at, ul.ci  from (select action as at, cat_id as ci from user_log
 
 这里简单的做个讲解，action as at ,cat_id as ci就是把action 设置别名 at ,cat_id 设置别名 ci，FROM的括号里的内容我们也设置了别名ul，这样调用时用ul.at,ul.ci,可以简化代码。
 
-### 3. 查询条数统计分析
+### 4. 查询条数统计分析
 经过简单的查询后我们同样也可以在select后加入更多的条件对表进行查询,下面可以用函数来查找我们想要的内容。
-##### 3.1 用聚合函数count()计算出表内有多少条行数据
+##### 1. 用聚合函数count()计算出表内有多少条行数据
 
 ```
 hive> select count(*) from user_log; -- 用聚合函数count()计算出表内有多少条行数据
@@ -199,7 +203,7 @@ hive> select count(*) from user_log; -- 用聚合函数count()计算出表内有
 
 我们可以看到，得出的结果为OK下的那个数字10000
 
-##### 3.2 在函数内部加上distinct，查出uid不重复的数据有多少条
+##### 2. 在函数内部加上distinct，查出uid不重复的数据有多少条
 下面继续执行操作：
 
 ```
@@ -211,7 +215,7 @@ hive> select count(distinct user_id) from user_log; -- 在函数内部加上dist
 > OK
 358
 
-##### 3.3 查询不重复的数据有多少条(为了排除客户刷单情况)
+##### 3. 查询不重复的数据有多少条(为了排除客户刷单情况)
 
 ```
 hive> select count(*) from (select user_id,item_id,cat_id,merchant_id,brand_id,month,day,action from user_log group by user_id,item_id,cat_id,merchant_id,brand_id,month,day,action having count(*)=1)a;
@@ -226,8 +230,8 @@ hive> select count(*) from (select user_id,item_id,cat_id,merchant_id,brand_id,m
 
 > FAILED: ParseException line 1:131 cannot recognize input near '< EOF >' '< EOF >' in subquery source.
 
-##### 4．关键字条件查询分析
-4.1 以关键字的存在区间为条件的查询
+### 5．关键字条件查询分析
+##### 1. 以关键字的存在区间为条件的查询
 使用where可以缩小查询分析的范围和精确度，下面用实例来测试一下。
 (1)查询双11那天有多少人购买了商品
 
@@ -239,7 +243,7 @@ hive> select count(distinct user_id) from user_log where action='2';
 > OK
 358
 
-4.2 关键字赋予给定值为条件，对其他数据进行分析
+##### 2. 关键字赋予给定值为条件，对其他数据进行分析
 取给定时间和给定品牌，求当天购买的此品牌商品的数量
 
 ```
@@ -249,8 +253,8 @@ hive> select count(*) from user_log where action='2' and brand_id=2661;
 > OK
 3
 
-##### 5．根据用户行为分析
-5.1. 查询一件商品在某天的购买比例或浏览比例
+### 6．根据用户行为分析
+##### 1. 查询一件商品在某天的购买比例或浏览比例
 
 ```
 hive> select count(distinct user_id) from user_log where action='2'; -- 查询有多少用户在双11购买了商品
@@ -259,7 +263,7 @@ hive> select count(distinct user_id) from user_log; -- 查询有多少用户在�
 
 根据上面语句得到购买数量和点击数量，两个数相除即可得出当天该商品的购买率。
 
-5.2. 查询双11那天，男女买家购买商品的比例
+##### 2. 查询双11那天，男女买家购买商品的比例
 
 ```
 hive> select count(*) from user_log where gender=0; --查询双11那天女性购买商品的数量
@@ -268,13 +272,13 @@ hive> select count(*) from user_log where gender=1; --查询双11那天男性购
 
 上面两条语句的结果相除，就得到了要要求的比例。
 
-5.3. 给定购买商品的数量范围，查询某一天在该网站的购买该数量商品的用户id
+##### 3. 给定购买商品的数量范围，查询某一天在该网站的购买该数量商品的用户id
 
 ```
 hive> select user_id from user_log where action='2' group by user_id having count(action='2')>5; -- 查询某一天在该网站购买商品超过5次的用户id
 ```
 
-##### 6. 用户实时查询分析
+### 7. 用户实时查询分析
 不同的品牌的浏览次数
 
 ```
