@@ -109,7 +109,6 @@ awk -F "," 'BEGIN{
 
 ### 预测回头客
 1. 创建数据表 rebuy
-
 ```
 # mysql -u root -p
 mysql> use dbtaobao;
@@ -118,18 +117,15 @@ mysql> exit;
 ```
 
 2. 将两个数据集分别存取到HDFS中
-
 ```
 # cd /usr/local/hadoop/
 # bin/hadoop fs -mkdir -p /dbtaobao/dataset
 # bin/hadoop fs -put /usr/local/dbtaobao/dataset/train_after.csv /dbtaobao/dataset
 # bin/hadoop fs -put /usr/local/dbtaobao/dataset/test_after.csv /dbtaobao/dataset
 ```
-
 3. 启动spark shell
 Spark支持通过JDBC方式连接到其他数据库获取数据生成DataFrame。
 执行如下命令：
-
 ```
 # cd /usr/local/spark
 # ./bin/spark-shell --jars /usr/local/spark/jars/mysql-connector-java-5.1.46-bin.jar --driver-class-path /usr/local/spark/jars/mysql-connector-java-5.1.46-bin.jar
@@ -139,48 +135,44 @@ Spark支持通过JDBC方式连接到其他数据库获取数据生成DataFrame�
 这里使用Spark MLlib自带的支持向量机SVM分类器进行预测回头客。在spark-shell中执行如下操作：
 1. 导入需要的包
 ```
-scala> import org.apache.spark.SparkConf
-scala> import org.apache.spark.SparkContext
-scala> import org.apache.spark.mllib.regression.LabeledPoint
-scala> import org.apache.spark.mllib.linalg.{Vectors,Vector}
-scala> import org.apache.spark.mllib.classification.{SVMModel, SVMWithSGD}
-scala> import org.apache.spark.mllib.evaluation.BinaryClassificationMetrics
-scala> import java.util.Properties
-scala> import org.apache.spark.sql.types._
-scala> import org.apache.spark.sql.Row
+import org.apache.spark.SparkConf
+import org.apache.spark.SparkContext
+import org.apache.spark.mllib.regression.LabeledPoint
+import org.apache.spark.mllib.linalg.{Vectors,Vector}
+import org.apache.spark.mllib.classification.{SVMModel, SVMWithSGD}
+import org.apache.spark.mllib.evaluation.BinaryClassificationMetrics
+import java.util.Properties
+import org.apache.spark.sql.types._
+import org.apache.spark.sql.Row
 ```
 
 2. 读取训练数据
 首先，读取训练文本文件；然后，通过map将每行的数据用“,”隔开，在数据集中，每行被分成了5部分，前4部分是用户交易的3个特征(age_range,gender,merchant_id)，最后一部分是用户交易的分类(label)。把这里我们用LabeledPoint来存储标签列和特征列。LabeledPoint在监督学习中常用来存储标签和特征，其中要求标签的类型是double，特征的类型是Vector。
+```
+val train_data = sc.textFile("/dbtaobao/dataset/train_after.csv")
+val test_data = sc.textFile("/dbtaobao/dataset/test_after.csv")
+```
 
-```
-scala> val train_data = sc.textFile("/dbtaobao/dataset/train_after.csv")
-scala> val test_data = sc.textFile("/dbtaobao/dataset/test_after.csv")
-```
 3. 构建模型
-
 ```
-scala> val train= train_data.map{line =>
+val train= train_data.map{line =>
   val parts = line.split(',')
   LabeledPoint(parts(4).toDouble,Vectors.dense(parts(1).toDouble,parts
 (2).toDouble,parts(3).toDouble))
 }
-scala> val test = test_data.map{line =>
+val test = test_data.map{line =>
   val parts = line.split(',')
   LabeledPoint(parts(4).toDouble,Vectors.dense(parts(1).toDouble,parts(2).toDouble,parts(3).toDouble))
 }
 ```
-
 接下来，通过训练集构建模型SVMWithSGD。这里的SGD即著名的随机梯度下降算法（Stochastic Gradient Descent）。设置迭代次数为1000，除此之外还有stepSize（迭代步伐大小），regParam（regularization正则化控制参数），miniBatchFraction（每次迭代参与计算的样本比例），initialWeights（weight向量初始值）等参数可以进行设置。
-
 ```
-scala> val numIterations = 1000
-scala> val model = SVMWithSGD.train(train, numIterations)
+val numIterations = 1000
+val model = SVMWithSGD.train(train, numIterations)
 ```
 
 4. 评估模型
 接下来，我们清除默认阈值，这样会输出原始的预测评分，即带有确信度的结果。
-
 ```
 model.clearThreshold()
 val scoreAndLabels = test.map{point =>
@@ -189,12 +181,22 @@ val scoreAndLabels = test.map{point =>
 }
 scoreAndLabels.foreach(println)
 ```
-
 如果我们设定了阀值，则会把大于阈值的结果当成正预测，小于阈值的结果当成负预测。
 ```
 model.setThreshold(0.0)
 scoreAndLabels.foreach(println)
 ```
+> 输出结果最后10条数据如下:
+-36145.25547982101 1.0
+-41436.42877491983 1.0
+-93968.91068332111 1.0
+-27617.286596836053 1.0
+-91757.8479348277 1.0
+-34526.44168181691 1.0
+-25860.69738111214 1.0
+-29591.03376107271 1.0
+-40863.08944799144 1.0
+-14765.484371218148 1.0
 
 5. 把结果添加到mysql数据库中
 现在我们上面没有设定阀值的测试集结果存入到MySQL数据中。
@@ -219,6 +221,17 @@ prop.put("password", "123456") //表示密码是123456
 prop.put("driver","com.mysql.jdbc.Driver") //表示驱动程序是com.mysql.jdbc.Driver
 //下面就可以连接数据库，采用append模式，表示追加记录到数据库dbtaobao的rebuy表中
 rebuyDF.write.mode("append").jdbc("jdbc:mysql://localhost:3306/dbtaobao", "dbtaobao.rebuy", prop)
+```
+退出scala shell
+```
+scala> :quit
+```
+
+6. 在mysql中查看导出的结果
+```
+# mysql -u root -p
+mysql> use dbtaobao;
+mysql> select * from rebuy limit 10;
 ```
 
 到这里，第四个步骤的实验内容顺利结束。

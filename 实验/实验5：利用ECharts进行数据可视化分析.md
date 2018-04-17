@@ -10,7 +10,7 @@ ECharts是一个纯 Javascript 的图表库，可以流畅的运行在 PC 和移
 
 # 实验步骤
 ### 1. 搭建tomcat+mysql+JSP开发环境
-tomcat 安装路径为 /usr/local/tomcat
+tomcat 已安装在 /usr/local/tomcat 路径下
 
 如果没有启动mysql,执行以下命令启动mysql
 ```
@@ -24,58 +24,42 @@ tomcat 安装路径为 /usr/local/tomcat
 ![5-1](5-1.png)
 
 2. 出现New Server Runtime Environment向导对话框,选择“Apache Tomcat v8.0”,点击next按钮,如下图：
-
 ![5-2](5-2.png)
 
 3. 选择Tomcat安装文件夹，如下图：
-
 ![5-3](5-3.png)
-
 选择tomcat的路径 /usr/local/tomcat
 
 4. 返回New Server Runtime Environment向导对话框，点击finish即可。如下图：
-
 ![5-4](5-4.png)
 
 5. 返回Dynamic Web Project向导对话框，点击finish即可。如下图：
-
 ![5-5](5-5.png)
 
 6. 这样新建一个Dynamic Web Project就完成了。在Eclipse中展开新建的MyWebApp项目，初始整个项目框架如下：
-
 ![5-6](5-6.png)
-
 src文件夹用来存放Java服务端的代码，例如:读取数据库MySQL中的数据
 WebContent文件夹则用来存放前端页面文件，例如：前端页面资源css、img、js，前端JSP页面
 
 7. 导入 mysql-connector-java
 打开命令行,执行以下指令:
-
 ```
 cp /usr/local/mysql-connector-java/mysql-connector-java-5.1.46-bin.jar ~/eclipse-workspace/MyWebApp/WebContent/WEB-INF/lib/mysql-connector-java-5.1.46-bin.jar
 ```
-
 上述操作完成后，即可开发可视化应用了。
 
 ### 3. 利用Eclipse 开发Dynamic Web Project应用
 整个项目开发完毕的项目结构，如下：
-
 ![5-7](5-7.png)
-
 src目录用来存放服务端Java代码，WebContent用来存放前端页面的文件资源与代码。其中css目录用来存放外部样式表文件、font目录用来存放字体文件、img目录存放图片资源文件、js目录存放JavaScript文件，lib目录存放Java与mysql的连接库。
 相关代码已经创建好并放在 /data/spark/MyWebApp目录下,读者只需将代码复制文件eclipse创建的项目对应文件夹下即可使用.
 创建完所有的文件后，运行MyWebApp，查看我的应用。
 首次运行MyWebApp,请按照如下操作，才能启动项目:
 双击打开index.jsp文件，然后顶部Run菜单选择：Run As–>Run on Server
-
 ![5-8](5-8.png)
-
 出现如下对话框，直接点击finish即可。
-
 ![5-9](5-9.png)
-
 以后如果要再次运行MyWebApp,只需要直接启动Tomcat服务器即可，关闭服务器也可以通过如下图关闭。
-
 ![5-10](5-10.png)
 
 ### 4. 重要代码解析

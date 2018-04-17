@@ -105,11 +105,6 @@ mysql> CREATE TABLE `dbtaobao`.`user_log` (`user_id` varchar(20),`item_id` varch
 ```
 
 提示：语句中的引号是反引号，不是单引号。需要注意的是，sqoop抓数据的时候会把类型转为string类型，所以mysql设计字段的时候，设置为varchar。
-创建成功后，输入下面命令退出MySQL：
-
-```
-mysql> exit;
-```
 
 ##### 4. 导入数据
 ```
@@ -179,5 +174,6 @@ INFO mapreduce.ExportJobBase: Exported 10000 records.
 mysql> use dbtaobao;
 mysql> select * from user_log limit 10;
 ```
+(在终端查看输出结果时可能会出现中文乱码,不会影响实验)
 
 从Hive导入数据到MySQL中，成功！

@@ -258,8 +258,19 @@ hive> select count(*) from user_log where action='2' and brand_id=2661;
 
 ```
 hive> select count(distinct user_id) from user_log where action='2'; -- 查询有多少用户在双11购买了商品
+```
+
+执行结果如下：
+> OK
+358
+
+```
 hive> select count(distinct user_id) from user_log; -- 查询有多少用户在双11点击了该店
 ```
+
+执行结果如下：
+> OK
+358
 
 根据上面语句得到购买数量和点击数量，两个数相除即可得出当天该商品的购买率。
 
@@ -267,16 +278,39 @@ hive> select count(distinct user_id) from user_log; -- 查询有多少用户在�
 
 ```
 hive> select count(*) from user_log where gender=0; --查询双11那天女性购买商品的数量
+```
+
+执行结果如下：
+> OK
+3361
+
+```
 hive> select count(*) from user_log where gender=1; --查询双11那天男性购买商品的数量
 ```
 
-上面两条语句的结果相除，就得到了要要求的比例。
+执行结果如下：
+> OK
+3299
+
+上面两条语句的结果相除，就得到了要求的比例。
 
 ##### 3. 给定购买商品的数量范围，查询某一天在该网站的购买该数量商品的用户id
 
 ```
 hive> select user_id from user_log where action='2' group by user_id having count(action='2')>5; -- 查询某一天在该网站购买商品超过5次的用户id
 ```
+
+执行结果最后10条数据如下：
+> 356408
+366342
+370679
+378206
+379005
+389295
+396129
+407719
+409280
+4229117
 
 ### 7. 用户实时查询分析
 不同的品牌的浏览次数
@@ -286,5 +320,17 @@ hive> create table scan(brand_id INT,scan INT) COMMENT 'This is the search of bi
 hive> insert overwrite table scan select brand_id,count(action) from user_log where action='2' group by brand_id; --导入数据
 hive> select * from scan; -- 显示结果
 ```
+
+执行结果最后10条数据如下：
+> 8288	1
+8309	1
+8319	1
+8322	1
+8329	3
+8357	2
+8391	1
+8396	3
+8410	1
+8461	1
 
 到这里，Hive数据分析实验顺利结束。
