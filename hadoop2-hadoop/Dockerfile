@@ -50,6 +50,12 @@ RUN  wget http://mirrors.hust.edu.cn/apache/spark/spark-2.3.0/spark-2.3.0-bin-ha
 ADD spark-config/* /usr/local/spark/conf
 
 # install eclipse-scala
-RUN wget http://downloads.typesafe.com/scalaide-pack/4.7.0-vfinal-oxygen-212-20170929/scala-SDK-4.7.0-vfinal-2.12-linux.gtk.x86_64.tar.gz \
-  && tar -zxvf scala-SDK-4.7.0-vfinal-2.12-linux.gtk.x86_64.tar.gz -C /usr/local \
-  && rm -f scala-SDK-4.7.0-vfinal-2.12-linux.gtk.x86_64.tar.gz
+RUN  wget https://mirrors.shuosc.org/eclipse/technology/epp/downloads/release/oxygen/3a/eclipse-jee-oxygen-3a-linux-gtk-x86_64.tar.gz \
+  && tar -zxvf eclipse-jee-oxygen-3a-linux-gtk-x86_64.tar.gz -C /usr/local \
+  && rm -f eclipse-jee-oxygen-3a-linux-gtk-x86_64.tar.gz
+
+# install tomcat
+RUN  wget http://mirrors.hust.edu.cn/apache/tomcat/tomcat-8/v8.0.51/bin/apache-tomcat-8.0.51.tar.gz \
+  && tar zxvf apache-tomcat-8.0.51.tar.gz -C /usr/local \
+  && mv /usr/local/apache-tomcat-8.0.51 /usr/local/tomcat \
+  && rm -rf apache-tomcat-8.0.51.tar.gz
