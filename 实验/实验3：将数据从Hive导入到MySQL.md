@@ -1,4 +1,5 @@
 # 将数据从Hive导入到MySQL
+本教程介绍大数据课程实验案例“淘宝双11数据分析与预测”的第三个步骤，将数据从Hive导入到MySQL。从数据导入到MySQL是为了后续数据可视化，服务端读取MySQL中的数据，渲染到前端ECharts页面。
 
 ### 所需知识储备
 - 数据仓库Hive概念与基本原理
@@ -60,7 +61,7 @@ hive> INSERT OVERWRITE TABLE dbtaobao.inner_user_log select * from dbtaobao.user
 请执行下面命令查询上面的插入命令是否成功执行：
 
 ```
-hive> select * from inner_user_log limit 10;
+hive> select * from dbtaobao.inner_user_log limit 10;
 ```
 
 结果如下:
@@ -107,13 +108,13 @@ mysql> CREATE TABLE `dbtaobao`.`user_log` (`user_id` varchar(20),`item_id` varch
 创建成功后，输入下面命令退出MySQL：
 
 ```
-mysql> exit
+mysql> exit;
 ```
 
 ##### 4. 导入数据
 ```
 # cd /usr/local/sqoop
-# bin/sqoop export --connect jdbc:mysql://localhost:3306/dbtaobao --username root --password 123456 --table user_log --export-dir '/user/hive/warehouse/dbtaobao.db/inner_user_log' --fields-terminated-by ',';
+# bin/sqoop export --connect "jdbc:mysql://localhost:3306/dbtaobao?useUnicode=true&characterEncoding=utf-8" --username root --password 123456 --table user_log --export-dir '/user/hive/warehouse/dbtaobao.db/inner_user_log' --fields-terminated-by ',';
 ```
 
 字段解释 :

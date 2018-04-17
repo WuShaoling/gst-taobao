@@ -141,8 +141,8 @@ mysql> create database hive;
 mysql> grant all on *.* to hive@localhost identified by 'hive';
 mysql> alter database hive character set latin1;
 mysql> flush privileges;
-//执行完毕后推出mysql shell
-mysql> exit
+//执行完毕后退出mysql shell
+mysql> exit;
 ```
 
 3.5 将数据导入Hive仓库

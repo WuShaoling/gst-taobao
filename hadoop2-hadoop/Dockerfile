@@ -46,6 +46,7 @@ RUN  wget http://mirrors.hust.edu.cn/apache/spark/spark-2.3.0/spark-2.3.0-bin-ha
   && mv /usr/local/spark-2.3.0-bin-hadoop2.7 /usr/local/spark \
   && rm -f spark-2.3.0-bin-hadoop2.7.tgz \
   && cp /usr/local/spark/conf/slaves.template /usr/local/spark/conf/slaves
+  && cp /usr/local/mysql-connector-java/mysql-connector-java-5.1.46-bin.jar /usr/local/spark/jars
 ADD spark-config/* /usr/local/spark/conf
 
 # install eclipse-scala
