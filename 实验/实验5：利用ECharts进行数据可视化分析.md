@@ -52,7 +52,7 @@ cp /usr/local/mysql-connector-java/mysql-connector-java-5.1.46-bin.jar ~/eclipse
 整个项目开发完毕的项目结构，如下：
 ![5-7](5-7.png)
 src目录用来存放服务端Java代码，WebContent用来存放前端页面的文件资源与代码。其中css目录用来存放外部样式表文件、font目录用来存放字体文件、img目录存放图片资源文件、js目录存放JavaScript文件，lib目录存放Java与mysql的连接库。
-相关代码已经创建好并放在 /data/spark/MyWebApp目录下,读者只需将代码复制文件eclipse创建的项目对应文件夹下即可使用.
+相关代码已经创建好并放在 /data/spark/MyWebApp,读者只需将代码复制文件eclipse创建的项目对应文件夹下即可使用.
 创建完所有的文件后，运行MyWebApp，查看我的应用。
 首次运行MyWebApp,请按照如下操作，才能启动项目:
 双击打开index.jsp文件，然后顶部Run菜单选择：Run As–>Run on Server
