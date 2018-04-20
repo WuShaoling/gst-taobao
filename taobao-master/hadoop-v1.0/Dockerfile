@@ -1,14 +1,15 @@
-FROM hadoop:base
+FROM cloudwarelabs/xfce4-min
+
+RUN apt-get update && apt-get install -y --no-install-recommends mysql-server
 
 # install some tools
-RUN apt-get update \
-    && apt-get install -y gedit \
-    && apt-get install -y unzip \
-    && apt-get install -y vim \
-    && apt-get install -y firefox \
-    && apt-get install -y fcitx fcitx-sunpinyin \
-    && apt-get install -y openssh-server \
-    && rm -f /usr/local/bin/pulsar
+RUN  apt-get install -y gedit \
+  && apt-get install -y unzip \
+  && apt-get install -y vim \
+  && apt-get install -y firefox \
+  && apt-get install -y fcitx fcitx-sunpinyin \
+  && apt-get install -y openssh-server \
+  && rm -f /usr/local/bin/pulsar
 
 # set ENV
 ENV JAVA_HOME "/usr/lib/jvm/java-8-oracle"
