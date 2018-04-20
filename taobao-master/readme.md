@@ -22,7 +22,7 @@ container:
   && sudo apt-get install -y software-properties-common \
   && sudo add-apt-repository ppa:webupd8team/java -y \
   && sudo apt-get update \
-  && sudo apt-get install -y oracle-java8-installer \
+  && sudo apt-get install -y oracle-java8-installer
 
 //config openssh
 # vim /etc/ssh/sshd_config
@@ -34,18 +34,20 @@ set PermitRootLogin yes
 
 //config mysql
 # vim /etc/mysql/my.cnf
-//set  "character_set_server=utf8"
-# chown -R mysql:mysql /var/lib/mysql /var/run/mysqld /etc/mysql
+//set character_set_server=utf8
 # mysql -u root -p //add hive db
-# service mysql restart
 mysql> create database hive;
 mysql> grant all on *.* to hive@localhost identified by 'hive';
 mysql> alter database hive character set latin1;
-mysql> flush privileges;
+mysql> use mysql;
+mysql> UPDATE user SET Password = PASSWORD('123456') WHERE user = 'root';
+mysql> FLUSH PRIVILEGES;
 mysql> exit
 
 // config hive dir in hdfs
-# RUN /usr/local/hadoop/bin/hdfs namenode -format
+# /usr/local/hadoop/bin/hdfs namenode -format
+# /usr/local/hadoop/sbin/start-dfs.sh
+# /usr/local/hadoop/sbin/start-yarn.sh
 # /usr/local/hadoop/bin/hadoop fs -mkdir /tmp
 # /usr/local/hadoop/bin/hadoop fs -mkdir /user
 # /usr/local/hadoop/bin/hadoop fs -mkdir /user/hive

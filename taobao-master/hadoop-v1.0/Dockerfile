@@ -5,6 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends mysql-server
 # install some tools
 RUN  apt-get install -y gedit \
   && apt-get install -y unzip \
+  && apt-get install -y xz-utils \
   && apt-get install -y vim \
   && apt-get install -y firefox \
   && apt-get install -y fcitx fcitx-sunpinyin \

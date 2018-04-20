@@ -9,3 +9,4 @@ OnlyShowIn=XFCE;
 StartupNotify=false
 Terminal=false
 Hidden=false
+icon=/usr/local/eclipse/icon.xpm
